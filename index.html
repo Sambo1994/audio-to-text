@@ -3,12 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Strange</title>
+    <title>Strange App - Audio to Binary to Text</title>
     <style>
         body {
             font-family: 'Courier New', Courier, monospace;
             text-align: center;
-            background-image: url('https://source.unsplash.com/random/1600x900');
+            background-image: url('https://images.pexels.com/photos/7736104/pexels-photo-7736104.jpeg');
             background-size: cover;
             background-position: center;
             color: white;
@@ -35,7 +35,7 @@
     </style>
 </head>
 <body>
-    <h1>Strange</h1>
+    <h1>Audio to Binary to Text</h1>
     <button id="start">▶ Start Recording</button>
     <button id="stop" disabled>⏹ Stop Recording</button>
     <button id="save" disabled>💾 Save Text</button>
@@ -103,20 +103,14 @@
             let binary = maxFreq.toString(2).padStart(8, '0');
             let text = binaryToText(binary);
             recordedText += text + " ";
-            document.getElementById("output").innerText = `Text: ${text}`;
-            document.getElementById("textPreview").innerText = `Converted Text: ${generateMeaningfulText(recordedText)}`;
+            document.getElementById("output").innerText = `Binary: ${binary} → Text: ${text}`;
+            document.getElementById("textPreview").innerText = `Converted Text: ${recordedText}`;
             requestAnimationFrame(processAudio);
         }
 
         function binaryToText(binary) {
             let decimal = parseInt(binary, 2);
-            return decimal >= 32 && decimal <= 126 ? String.fromCharCode(decimal) : ' ';
-        }
-
-        function generateMeaningfulText(inputText) {
-            const words = [];
-            let generatedText = inputText.split(" ").map(() => words[Math.floor(Math.random() * words.length)]).join(" ");
-            return generatedText;
+            return decimal >= 32 && decimal <= 126 ? String.fromCharCode(decimal) : `[${decimal}]`;
         }
     </script>
 </body>
