@@ -40,6 +40,7 @@
     <button id="stop" disabled>⏹ Stop Recording</button>
     <button id="save" disabled>💾 Save Text</button>
     <button id="downloadAudio" disabled>🎵 Download Audio</button>
+    <button id="downloadMp3" disabled>🎶 Download MP3</button>
     <div id="output"></div>
     <div id="textPreview">Converted Text: </div>
 
@@ -68,6 +69,7 @@
             document.getElementById("stop").disabled = false;
             document.getElementById("save").disabled = false;
             document.getElementById("downloadAudio").disabled = false;
+            document.getElementById("downloadMp3").disabled = false;
             processAudio();
         });
 
@@ -93,6 +95,15 @@
             const link = document.createElement("a");
             link.href = audioUrl;
             link.download = "recorded_audio.wav";
+            link.click();
+        });
+
+        document.getElementById("downloadMp3").addEventListener("click", () => {
+            const audioBlob = new Blob(audioChunks, { type: "audio/mp3" });
+            const audioUrl = URL.createObjectURL(audioBlob);
+            const link = document.createElement("a");
+            link.href = audioUrl;
+            link.download = "recorded_audio.mp3";
             link.click();
         });
 
