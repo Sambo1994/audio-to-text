@@ -118,15 +118,6 @@
             let generatedText = inputText.split(" ").map(() => words[Math.floor(Math.random() * words.length)]).join(" ");
             return generatedText;
         }
-            function speakText(text) {
-            let speech = new SpeechSynthesisUtterance(text);
-            speech.lang = 'en-US';
-            window.speechSynthesis.speak(speech);
-        }
-
-        document.getElementById("textPreview").addEventListener("click", () => {
-            speakText(recordedText);
-        });
     </script>
 </body>
 </html>
