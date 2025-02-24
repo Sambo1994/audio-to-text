@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Audio to Binary to Text</title>
+    <style>
+        body { font-family: Arial, sans-serif; text-align: center; }
+        button { padding: 10px 20px; margin: 10px; font-size: 16px; }
+        #output { margin-top: 20px; font-size: 18px; }
+    </style>
+</head>
+<body>
+    <h1>Audio to Binary to Text</h1>
+    <button id="start">Start Recording</button>
+    <button id="stop" disabled>Stop Recording</button>
+    <button id="save" disabled>Save Text</button>
+    <button id="downloadAudio" disabled>Download Audio</button>
+    <div id="output"></div>
+
+    <script>
+        let audioContext, analyser, microphone, dataArray, mediaRecorder;
+        let recording = false;
+        let recordedText = "";
+        let audioChunks = [];
+
+        document.getElementById("start").addEventListener("click", async () => {
+            audioContext = new (window.AudioContext || window.webkitAudioContext)();
+            analyser = audioContext.createAnalyser();
+            analyser.fftSize = 256;
+            dataArray = new Uint8Array(analyser.frequencyBinCount);
+
+            const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+            microphone = audioContext.createMediaStreamSource(stream);
+            microphone.connect(analyser);
+            recording = true;
+            
+            mediaRecorder = new MediaRecorder(stream);
+            mediaRecorder.start();
+            mediaRecorder.ondataavailable = event => audioChunks.push(event.data);
+
+            document.getElementById("start").disabled = true;
+            document.getElementById("stop").disabled = false;
+            document.getElementById("save").disabled = false;
+            document.getElementById("downloadAudio").disabled = false;
+            processAudio();
+        });
+
+        document.getElementById("stop").addEventListener("click", () => {
+            recording = false;
+            document.getElementById("start").disabled = false;
+            document.getElementById("stop").disabled = true;
+            audioContext.close();
+            mediaRecorder.stop();
+        });
+
+        document.getElementById("save").addEventListener("click", () => {
+            const blob = new Blob([recordedText], { type: "text/plain" });
+            const link = document.createElement("a");
+            link.href = URL.createObjectURL(blob);
+            link.download = "audio_text.txt";
+            link.click();
+        });
+
+        document.getElementById("downloadAudio").addEventListener("click", () => {
+            const audioBlob = new Blob(audioChunks, { type: "audio/wav" });
+            const audioUrl = URL.createObjectURL(audioBlob);
+            const link = document.createElement("a");
+            link.href = audioUrl;
+            link.download = "recorded_audio.wav";
+            link.click();
+        });
+
+        function processAudio() {
+            if (!recording) return;
+            analyser.getByteFrequencyData(dataArray);
+            let maxFreq = dataArray.indexOf(Math.max(...dataArray));
+            let binary = maxFreq.toString(2).padStart(8, '0');
+            let text = binaryToText(binary);
+            recordedText += text + " ";
+            document.getElementById("output").innerText = `Binary: ${binary} → Text: ${text}`;
+            requestAnimationFrame(processAudio);
+        }
+
+        function binaryToText(binary) {
+            let decimal = parseInt(binary, 2);
+            return decimal >= 32 && decimal <= 126 ? String.fromCharCode(decimal) : `[${decimal}]`;
+        }
+    </script>
+</body>
+</html>
