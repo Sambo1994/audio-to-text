@@ -104,13 +104,20 @@
             let text = binaryToText(binary);
             recordedText += text + " ";
             document.getElementById("output").innerText = `Text: ${text}`;
-            document.getElementById("textPreview").innerText = `Converted Text: ${recordedText}`;
+            document.getElementById("textPreview").innerText = `Converted Text: ${generateMeaningfulText(recordedText)}`;
             requestAnimationFrame(processAudio);
         }
 
         function binaryToText(binary) {
     let decimal = parseInt(binary, 2);
-    return decimalToMorse(decimal);
+    return decimal >= 32 && decimal <= 126 ? String.fromCharCode(decimal) : ' ';
+}
+
+function generateMeaningfulText(inputText) {
+    const words = ["hello", "world", "strange", "future", "code", "binary", "text", "random", "meaningful", "data"];
+    let generatedText = inputText.split(" ").map(() => words[Math.floor(Math.random() * words.length)]).join(" ");
+    return generatedText;
+}]`;
 }
 
 function decimalToMorse(decimal) {
