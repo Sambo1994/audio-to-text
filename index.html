@@ -3,20 +3,45 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Audio to Binary to Text</title>
+    <title>Strange</title>
     <style>
-        body { font-family: Arial, sans-serif; text-align: center; }
-        button { padding: 10px 20px; margin: 10px; font-size: 16px; }
-        #output { margin-top: 20px; font-size: 18px; }
+        body {
+            font-family: 'Courier New', Courier, monospace;
+            text-align: center;
+            background-image: url('https://source.unsplash.com/random/1600x900');
+            background-size: cover;
+            background-position: center;
+            color: white;
+        }
+        button {
+            padding: 10px 20px;
+            margin: 10px;
+            font-size: 16px;
+        }
+        #output {
+            margin-top: 20px;
+            font-size: 18px;
+        }
+        #textPreview {
+            margin-top: 20px;
+            font-size: 20px;
+            font-weight: bold;
+            color: yellow;
+            background: rgba(0, 0, 0, 0.6);
+            padding: 10px;
+            display: inline-block;
+            border-radius: 5px;
+        }
     </style>
 </head>
 <body>
-    <h1>Audio to Binary to Text</h1>
-    <button id="start">Start Recording</button>
-    <button id="stop" disabled>Stop Recording</button>
-    <button id="save" disabled>Save Text</button>
-    <button id="downloadAudio" disabled>Download Audio</button>
+    <h1>Strange</h1>
+    <button id="start">▶ Start Recording</button>
+    <button id="stop" disabled>⏹ Stop Recording</button>
+    <button id="save" disabled>💾 Save Text</button>
+    <button id="downloadAudio" disabled>🎵 Download Audio</button>
     <div id="output"></div>
+    <div id="textPreview">Converted Text: </div>
 
     <script>
         let audioContext, analyser, microphone, dataArray, mediaRecorder;
@@ -78,7 +103,8 @@
             let binary = maxFreq.toString(2).padStart(8, '0');
             let text = binaryToText(binary);
             recordedText += text + " ";
-            document.getElementById("output").innerText = `Binary: ${binary} → Text: ${text}`;
+            document.getElementById("output").innerText = `Text: ${text}`;
+            document.getElementById("textPreview").innerText = `Converted Text: ${recordedText}`;
             requestAnimationFrame(processAudio);
         }
 
